@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Vinyl Alert {{ current_user.username }}{% endblock %}
+
+{% block page_content %}
+<div class="row">
+	<div class="large-12 columns">
+		<h3>{{user_agent}} - Authorised</h3>
+		<h4>{% if current_user.is_authenticated() %}{{ current_user.username }}{% else %}Stranger{% endif %}</h4>
+		<hr/>
+	</div>
+</div>
+
+<div class="row">
+	<div class="large-12 columns">
+		<h3>{{user.username}}&nbsp;(ID:&nbsp;{{user.id}})</h3>
+		<hr/>
+	</div>
+</div>
+
+<div class="row">
+	<div class="large-12 columns">
+		<h3>Want List - (Length:&nbsp;{{wantlist_len}})</h3>
+		<ul>
+            {%- for item in wantlist %}
+            <li>Release: {{item['rel']}}</li>
+			<li>
+                <b>Release ID:</b>&nbsp;<a href="http://www.discogs.com/release/{{item['id']}}" target="_blank">{{item['id']}}</a>,&nbsp;
+                <b>Title:</b>&nbsp;{{item['title']}},&nbsp;
+                <b>Artists:</b>&nbsp;
+				{%- for artist in item['artists'] %}
+                <a href="http://www.discogs.com/artist/{{artist['id']}}" target="_blank">{{artist['name']}}</a>,&nbsp;
+				{% endfor %},&nbsp;
+				<b>Year:</b>&nbsp;{{item['year']}},&nbsp;
+				<b>Country:</b>&nbsp;{{item['country']}},&nbsp;
+                <br/>
+                &nbsp;&nbsp;<b>Format:</b>&nbsp;[
+                {%- for f in item['format'] %}
+                {%- if f['name'] %}
+                Name:&nbsp;{{f['name']}},&nbsp;
+                {% endif %}
+                {%- if f['descriptions'] %}
+                Descriptions:&nbsp;{{f['descriptions']}},&nbsp;
+                {% endif %}
+                {%- if f['text'] %}
+                Text:&nbsp;{{f['text']}},&nbsp;
+                {% endif %}
+                Qty:&nbsp;{{f['qty']}}
+                {% endfor %}
+			</li>
+            <br/>
+            {% endfor %}
+		</ul>
+        <hr/>
+	</div>
+</div>
+
+{% endblock %}
+
+
