@@ -6,20 +6,35 @@
 <div class="row">
 	<div class="large-12 columns">
 		<h2>Want List</h2>
-		<h4>Page Name: {{ page_name }}</h4>
 		<hr/>
 	</div>
 </div>
 
 <div class="row">
 	<div class="large-12 columns">
-		<b>Wantlist: </b>{{wantlist}}
+		<h3><ul>Wantlist</ul></h3>
+        {% for item in wantlist %}
+		<table border="1">
+			<tr><td><b>ID:&nbsp;</b></td><td>{{item.id}}</td></tr>
+            <tr><td><b>Artists:&nbsp;</b></td><td>{{item.artists}}</td></tr>
+            <tr><td><b>Title:&nbsp;</b></td><td>{{item.title}}</td></tr>
+            <tr><td><b>Year:&nbsp;</b></td><td>{{item.year}}</td></tr>
+            <tr><td><b>Genres:&nbsp;</b></td><td>{{item.genres}}</td></tr>
+            <tr><td><b>Country:&nbsp;</b></td><td>{{item.country}}</td></tr>
+            <tr><td><b>Status:&nbsp;</b></td><td>{{item.status}}</td></tr>
+            <tr><td><b>Labels:&nbsp;</b></td><td>{{item.labels}}</td></tr>
+            <tr><td><b>Companies:&nbsp;</b></td><td>{{item.companies}}</td></tr>
+            <tr><td><b>Credits:&nbsp;</b></td><td>{{item.credits}}</td></tr>
+            <tr><td><b>Format:&nbsp;</b></td><td>{{item.format}}</td></tr>
+            <tr><td><b>Notes:&nbsp;</b></td><td>{{item.Notes}}</td></tr>
+            <tr><td><b>Tracklist:&nbsp;</b></td><td>{{item.tracklist}}</td></tr>
+            <tr><td><b>Data Quality:&nbsp;</b></td><td>{{item.data_quality}}</td></tr>
+		</table>
+        <br/>
+        {% endfor %}
 		<hr/>
 		<b>Wantlist Len: </b>{{wantlist_len}}
 		<hr/>
-		<p>
-			Stay cool and don't lose your temper cos it ain't working right now. It will!!
-		</p>
 	</div>
 </div>
 

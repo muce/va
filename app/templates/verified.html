@@ -6,8 +6,7 @@
 {%- if current_user.is_authenticated() %}
 <div class="row">
 	<div class="large-12 columns">
-		<h2>Access Details</h2>
-        <h4>Page Name: {{ page_name }}</h4>
+		<h2>Welcome</h2>
 		<hr/>
 	</div>
 </div>
@@ -18,10 +17,6 @@
         <p>
             User: {{user.name}}
         </p>
-        <p>
-            Wantlist Len: {{wantlist_len}}
-        </p>
-        <h3><a href="{{main_menu_url}}">Main Menu</a></h3>
 	</div>
 </div>
 

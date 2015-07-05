@@ -1,23 +1,29 @@
 {% extends "base.html" %}
 
-{% block title %}Vinyl Alert{% endblock %}
+{% block title %}Vinyl Alert {{ current_user.username }}{% endblock %}
 
 {% block page_content %}
 <div class="row">
 	<div class="large-12 columns">
-		<h1>Hello {% if current_user.is_authenticated() %}{{ current_user.username }}{% else %}Stranger{% endif %}</h1>
+		<h2>Collection</h2>
 		<hr/>
 	</div>
 </div>
 
 <div class="row">
 	<div class="large-12 columns">
-		<h3>Collection - {{username}}</h3>
-		<p>
-			something about the collection
-		</p>
+		<h3><ul>Collection</ul></h3>
+		<ul>
+		{% for item in collection: %}
+			<li>{{item}}</li>
+		{% endfor %}
+		</ul>
 		<hr/>
+		<b>Collection Len: </b>{{collection_len}}
+		<hr/>
+	</div>
 </div>
+
 {% endblock %}
 
 

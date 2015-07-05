@@ -29,10 +29,7 @@ def index():
             resp = d.get_authorize_url(callback_url = mm.get_dict_key('callback_url'))
             break
         except ssl.SSLError:
-            print ''
-            print 'SSLError'
-            print ''
-            resp = d.get_authorize_url(callback_url = mm.get_dict_key('callback_url'))
+            print "ssl.SSLError at resp = d.get_authorize_url(callback_url = mm.get_dict_key('callback_url'))"
 
     mm.set_dict_key('request_token', resp[0])
     mm.set_dict_key('request_secret', resp[1])
@@ -44,33 +41,26 @@ def index():
 @main.route('/authorised')
 def discogs_authorised():
     app = current_app._get_current_object()
-
     d = mm.get_dict_key('client')
 
-    """
-    #me = d.identity()
-    #u = d.user(me.username)
-    #wantlist_items = mm.get_wantlist_items(me)
-    """
-
     mm.set_dict_key('verifier', request.args['oauth_verifier'])
-    resp = d.get_access_token(mm.get_dict_key('verifier'))
-    mm.set_dict_key('access_token', resp[0])
-    mm.set_dict_key('access_secret', resp[1])
+    at = d.get_access_token(mm.get_dict_key('verifier'))
+    mm.set_dict_key('access_token', at[0])
+    mm.set_dict_key('access_secret', at[1])
 
     me = d.identity()
     u = d.user(me.username)
-    wantlist_len = len(mm.get_wantlist_items(me))
+
+    mm.set_dict_key('client', d)
 
     return render_template('verified.html',
-                            page_name = 'verified.html',
                             user = u,
-                            wantlist_len = wantlist_len,
                             main_menu_url = 'http://localhost:5000/menu')
 
 @main.route('/menu')
 def discogs_menu():
     app = current_app._get_current_object()
+    d = mm.get_dict_key('client')
 
     return render_template('main_menu.html',
                             user_agent = mm.get_dict_key('user_agent'),
@@ -84,6 +74,7 @@ def discogs_menu():
 @main.route('/tokens')
 def discogs_tokens():
     app = current_app._get_current_object()
+    d = mm.get_dict_key('client')
 
     return render_template('tokens.html',
                             page_name = 'tokens.html',
@@ -94,47 +85,33 @@ def discogs_wantlist():
     app = current_app._get_current_object()
 
     d = mm.get_dict_key('client')
-    d.set_consumer_key(mm.get_dict_key('consumer_key'), mm.get_dict_key('consumer_secret'))
+    #d.set_consumer_key(mm.get_dict_key('consumer_key'), mm.get_dict_key('consumer_secret'))
 
     me = d.identity()
     u = d.user(me.username)
-    wantlist = mm.get_wantlist_items(me)
-    wantlist_len = len(wantlist)
+
+    while True:
+        try:
+            wantlist = mm.get_wantlist_items(me)
+            wantlist_len = len(wantlist)
+            break
+        except ssl.SSLError:
+            print "SSLError at wantlist = mm.get_wantlist_items(me)"
 
     return render_template('wantlist.html',
                             user_agent = mm.get_dict_key('user_agent'),
                             page_name = 'wantlist.html',
-                            wantlist = str(wantlist),
+                            wantlist = wantlist,
                             wantlist_len = wantlist_len)
 
 @main.route('/collection')
 def discogs_collection():
-    return render_template('index.html')
+    collection = {'item1': 'dsfdsf', 'item2': 'dsgdsgds'}
+    collection_len = len(collection)
+    return render_template('collection.html',
+                           collection = collection,
+                           collection_len = collection_len)
 
-"""
-    me = d.identity()
-    u = d.user(me.username)
-    wantlist = me.wantlist
-
-    # search for x number of users from 0..n
-    me.userlist = ['Diognes_The_Fox', 'scientistindubwise', 'lhrecords', 'theory-x']
-
-    return render_template('access.html',
-                           user_agent=session['discogs_user_agent'],
-                           user=u,
-                           #consumer_key=session['discogs_consumer_key'],
-                           #consumer_secret=session['discogs_consumer_secret'],
-                           #callback_url=session['discogs_callback_url'],
-                           #request_token=session['request_token'],
-                           #request_secret=session['request_secret'],
-                           #access_token=session['access_token'],
-                           #access_secret=session['access_secret'],
-                           #access_token_url=session['access_token_url'],
-                           #mm_wantlist_items=mm_wantlist_items,
-                           wantlist=wantlist,
-                           wantlist_len=str(len(wantlist)),
-                           num_users=200000)
-"""
 @main.route('/discogs/user/<username>')
 def discogs_user(username):
     d = Client(session['discogs_user_agent'])
