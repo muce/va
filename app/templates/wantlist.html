@@ -5,15 +5,21 @@
 {% block page_content %}
 <div class="row">
 	<div class="large-12 columns">
-		<h3>{{user_agent}} - Want List</h3>
-		<h3>{{user.username}}&nbsp;(ID:&nbsp;{{user.id}})</h3>
+		<h2>Want List</h2>
+		<h4>Page Name: {{ page_name }}</h4>
 		<hr/>
 	</div>
 </div>
 
 <div class="row">
 	<div class="large-12 columns">
-		<b>Wantlist Items Length: {{wantlist_items_len}}</b>
+		<b>Wantlist: </b>{{wantlist}}
+		<hr/>
+		<b>Wantlist Len: </b>{{wantlist_len}}
+		<hr/>
+		<p>
+			Stay cool and don't lose your temper cos it ain't working right now. It will!!
+		</p>
 	</div>
 </div>
 

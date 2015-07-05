@@ -20,6 +20,7 @@ class Config:
     DISCOGS_CALLBACK_URL = 'http://localhost:5000/authorised'
     DISCOGS_ARTIST_URL = 'http://www.discogs.com/artist'
     DISCOGS_BASE_URL = 'https://api.discogs.com/'
+    DISCOGS_MAIN_MENU_URL = 'http://localhost:5000/main_menu.html'
     DISCOGS_USER_URL = ''
     DISCOGS_TITLE_URL = ''
     DISCOGS_FORMAT_URL = ''

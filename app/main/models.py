@@ -33,6 +33,9 @@ class MatchMaker():
     def get_dict_key(self, key):
         return self.dict[key]
 
+    def get_items(self):
+        return self.dict.iteritems()
+
     def __repr__(self):
         return '<MatchMaker %r>' % self.name
 

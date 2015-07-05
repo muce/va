@@ -36,109 +36,76 @@ def index():
 
     mm.set_dict_key('request_token', resp[0])
     mm.set_dict_key('request_secret', resp[1])
-    mm.set_dict_key('access_token_url', resp[2])
-    d.set_token(mm.get_dict_key('request_token'), mm.get_dict_key('request_secret'))
+    mm.set_dict_key('authorise_url', resp[2])
     mm.set_dict_key('client', d)
 
-    return redirect(mm.get_dict_key('access_token_url'))
+    return redirect(mm.get_dict_key('authorise_url'))
 
 @main.route('/authorised')
 def discogs_authorised():
     app = current_app._get_current_object()
 
-    d = Client(mm.get_dict_key('user_agent'))
-    d.set_consumer_key(mm.get_dict_key('consumer_key'), mm.get_dict_key('consumer_secret'))
+    d = mm.get_dict_key('client')
 
-    while True:
-        try:
-            resp = d.get_authorize_url(callback_url = mm.get_dict_key('callback_url'))
-            break
-        except ssl.SSLError:
-            print 'SSLError'
-            resp = d.get_authorize_url(callback_url = mm.get_dict_key('callback_url'))
-
-    mm.set_dict_key('oauth_token', resp[0])
-    mm.set_dict_key('oauth_token_secret', resp[1])
-    mm.set_dict_key('oauth_verifier', resp[2])
-
-    for i in resp:
-        print i
-
-    #d.set_token(mm.get_dict_key('request_token'), mm.get_dict_key('request_secret'))
-
-    #mm.set_dict_key('oauth_verifier', request.args['oauth_verifier'])
-    #mm.set_dict_key('oauth_token', request.args['oauth_token'])
-    #resp = d.get_access_token(mm.get_dict_key('oauth_verifier'))
-
-    print ''
-    print '/verified.html: \n\trequest_token: '+mm.get_dict_key('request_token')+'\n\trequest_secret: '+mm.get_dict_key('request_secret')+'\n\toauth_token: '+mm.get_dict_key('oauth_token')+'\n\toauth_token_secret: '+mm.get_dict_key('oauth_token_secret')+'\n\toauth_verifier: '+mm.get_dict_key('oauth_verifier')
-    print ''
-
+    """
     #me = d.identity()
     #u = d.user(me.username)
     #wantlist_items = mm.get_wantlist_items(me)
+    """
+
+    mm.set_dict_key('verifier', request.args['oauth_verifier'])
+    resp = d.get_access_token(mm.get_dict_key('verifier'))
+    mm.set_dict_key('access_token', resp[0])
+    mm.set_dict_key('access_secret', resp[1])
+
+    me = d.identity()
+    u = d.user(me.username)
+    wantlist_len = len(mm.get_wantlist_items(me))
 
     return render_template('verified.html',
-                           user_agent = mm.get_dict_key('user_agent'),
-                           consumer_key = mm.get_dict_key('consumer_key'),
-                           consumer_secret = mm.get_dict_key('consumer_secret'),
-                           callback_url = mm.get_dict_key('callback_url'),
-                           request_token = mm.get_dict_key('request_token'),
-                           request_secret = mm.get_dict_key('request_secret'),
-                           oauth_token = mm.get_dict_key('oauth_token'),
-                           oauth_secret = mm.get_dict_key('oauth_token_secret'),
-                           oauth_verifier = mm.get_dict_key('oauth_verifier'))
+                            page_name = 'verified.html',
+                            user = u,
+                            wantlist_len = wantlist_len,
+                            main_menu_url = 'http://localhost:5000/menu')
 
-    #return 'verified.html'
-
-
-@main.route('/verified')
-def discogs_verified():
+@main.route('/menu')
+def discogs_menu():
     app = current_app._get_current_object()
 
-    print ''
-    print '/verified:'
-    print ''
-
-    """
-
     return render_template('main_menu.html',
-                           user_agent=session['discogs_user_agent'],
-                           user = u,
-                           collectionlist_url = '/',
-                           wantlist_url = app.config['DISCOGS_WANTLIST_URL']+'?oauth_token='+session['oauth_token']+'&oauth_verifier='+session['oauth_verifier'],
-                           wantlist_items = wantlist_items,
-                           wantlist_items_len = str(len(wantlist_items)))
-    """
-    return "verified"
+                            user_agent = mm.get_dict_key('user_agent'),
+                            page_name = 'main_menu.html',
+                            wantlist_url = '/wantlist',
+                            collectionlist_url = 'collectionlist_url',
+                            salelist_url = 'salelist_url',
+                            matchlist_url = 'matchlist_url',
+                            other_url = 'other_url')
+
+@main.route('/tokens')
+def discogs_tokens():
+    app = current_app._get_current_object()
+
+    return render_template('tokens.html',
+                            page_name = 'tokens.html',
+                            mm_items = mm.get_items())
 
 @main.route('/wantlist')
 def discogs_wantlist():
     app = current_app._get_current_object()
-    #session['oauth_verifier'] = request.args['oauth_verifier']
-    #d = Client(session['discogs_user_agent'])
-    #d.set_consumer_key(session['discogs_consumer_key'], session['discogs_consumer_secret'])
-    #d.set_token(session['request_token'], session['request_secret'])
-    #resp = d.get_access_token(request.args['oauth_verifier'])
-    #session['access_token'] = resp[0]
-    #session['access_secret'] = resp[1]
 
-    #me = d.identity()
-    #u = d.user(me.username)
-    wantlist_items = 'wantlist_items' #mm.get_wantlist_items(me)
-    print 'WANTLIST_URL'
-    print 'OAUTH_TOKEN: '+session['oauth_token']
-    print 'OAUTH_VERIFIER: '+session['oauth_verifier']
-    print 'CONSUMER_KEY: '+session['discogs_consumer_key']
-    print 'CONSUMER_SECRET: '+session['discogs_consumer_secret']
-    print 'ACCESS_TOKEN: '+session['access_token']
-    print 'ACCESS_SECRET: '+session['access_secret']
+    d = mm.get_dict_key('client')
+    d.set_consumer_key(mm.get_dict_key('consumer_key'), mm.get_dict_key('consumer_secret'))
+
+    me = d.identity()
+    u = d.user(me.username)
+    wantlist = mm.get_wantlist_items(me)
+    wantlist_len = len(wantlist)
 
     return render_template('wantlist.html',
-                           user_agent=session['discogs_user_agent'],
-                           user = 'user',
-                           wantlist_items = wantlist_items,
-                           wantlist_items_len = 'len')
+                            user_agent = mm.get_dict_key('user_agent'),
+                            page_name = 'wantlist.html',
+                            wantlist = str(wantlist),
+                            wantlist_len = wantlist_len)
 
 @main.route('/collection')
 def discogs_collection():

@@ -1,6 +1,6 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}VinylAlert{% endblock %}
+{% block title %}Vinyl Alert{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -18,12 +18,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">VinylAlert</a>
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">Vinyl Alert</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% if current_user.is_authenticated() %}
-                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="http://localhost:5000/menu">Menu</a></li>
+                <li><a href="http://localhost:5000/tokens">Tokens</a></li>
                 {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">

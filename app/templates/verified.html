@@ -6,30 +6,25 @@
 {%- if current_user.is_authenticated() %}
 <div class="row">
 	<div class="large-12 columns">
-		<h3>{{user_agent}} - Access Details</h3>
+		<h2>Access Details</h2>
+        <h4>Page Name: {{ page_name }}</h4>
 		<hr/>
 	</div>
 </div>
 
 <div class="row">
+	<h3>Discogs Verified</h3>
 	<div class="large-12 columns">
-		<p>
-			<table>
-                <tr><td><b>Access Token URL: </b></td><td>{{access_token_url}}</td></tr>
-				<tr><td><br/></td></tr>
-				<tr><td><b>Consumer Key: </b></td><td>{{consumer_key}}</td></tr>
-				<tr><td><b>Consumer Secret: </b></td><td>{{consumer_secret}}</td></tr>
-				<tr><td><b>Request Token: </b></td><td>{{request_token}}</td></tr>
-				<tr><td><b>Request Secret: </b></td><td>{{request_secret}}</td></tr>
-				<tr><td><b>Oauth Token: </b></td><td>{{oauth_token}}</td></tr>
-				<tr><td><b>Oauth Secret: </b></td><td>{{oauth_secret}}</td></tr>
-				<tr><td><b>Oauth Verifier: </b></td><td>{{oauth_verifier}}</td></tr>
-                <tr><td><br/></td></tr>
-                <tr><td><a href="/main_menu.html">Main Menu</a></td></tr>
-			</table>
-		</p>
+        <p>
+            User: {{user.name}}
+        </p>
+        <p>
+            Wantlist Len: {{wantlist_len}}
+        </p>
+        <h3><a href="{{main_menu_url}}">Main Menu</a></h3>
 	</div>
 </div>
+
 {% else %}
 <h3>Guest - Unauthorised. Please Register or Login</h3>
 {% endif %}
