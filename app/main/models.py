@@ -10,18 +10,18 @@ class MatchMaker():
         want_list_items = []
         for i in me.wantlist:
             wantlist_obj = {}
-            wantlist_obj['id'] = i.release.id or 'fail'
-            wantlist_obj['title'] = i.release.title or 'fail'
-            wantlist_obj['year'] = i.release.year or 'fail'
-            wantlist_obj['status'] = i.release.status or 'fail'
-            wantlist_obj['country'] = i.release.country or 'fail'
-            wantlist_obj['data_quality'] = i.release.data_quality or 'fail'
-            wantlist_obj['genres'] = i.release.genres or 'fail'
-            wantlist_obj['labels'] = i.release.labels or 'fail'
+            wantlist_obj['id'] = i.release.id
+            wantlist_obj['title'] = i.release.title
+            wantlist_obj['year'] = i.release.year
+            wantlist_obj['status'] = i.release.status
+            wantlist_obj['country'] = i.release.country
+            wantlist_obj['data_quality'] = i.release.data_quality
+            wantlist_obj['genres'] = i.release.genres
+            wantlist_obj['labels'] = i.release.labels
             wantlist_obj['companies'] = "companies"  # i.release.companies
-            wantlist_obj['artists'] = i.release.artists or 'fail'
+            wantlist_obj['artists'] = i.release.artists
             wantlist_obj['notes'] = "notes"  # i.release.notes
-            wantlist_obj['format'] = i.release.formats or 'fail'
+            wantlist_obj['format'] = i.release.formats
             wantlist_obj['credits'] = "credits"  # i.release.credits
             wantlist_obj['tracklist'] = "tracklist"  # i.release.tracklist
             want_list_items.append(wantlist_obj)

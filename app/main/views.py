@@ -9,6 +9,8 @@ from config import *
 from discogs_client import *
 from splinter import Browser
 import ssl
+import urllib2
+
 
 mm = MatchMaker()
 
@@ -37,6 +39,13 @@ def index():
     mm.set_dict_key('client', d)
 
     return redirect(mm.get_dict_key('authorise_url'))
+
+    """
+    r = urllib2.urlopen(mm.get_dict_key('authorise_url')).read()
+    for i in r:
+        print r
+    return redirect('/tokens')
+    """
 
 @main.route('/authorised')
 def discogs_authorised():
@@ -71,7 +80,7 @@ def discogs_menu():
                             matchlist_url = 'matchlist_url',
                             other_url = 'other_url')
 
-@main.route('/tokens')
+@main.route('/discogs/tokens')
 def discogs_tokens():
     app = current_app._get_current_object()
     d = mm.get_dict_key('client')
@@ -80,7 +89,17 @@ def discogs_tokens():
                             page_name = 'tokens.html',
                             mm_items = mm.get_items())
 
-@main.route('/wantlist')
+@main.route('/discogs/me')
+def discogs_me():
+    app = current_app._get_current_object()
+    d = mm.get_dict_key('client')
+    me = d.identity()
+
+    return render_template('me.html',
+                            page_name = 'me.html',
+                            me = me)
+
+@main.route('/discogs/wantlist')
 def discogs_wantlist():
     app = current_app._get_current_object()
 
@@ -104,7 +123,7 @@ def discogs_wantlist():
                             wantlist = wantlist,
                             wantlist_len = wantlist_len)
 
-@main.route('/collection')
+@main.route('/discogs/collection')
 def discogs_collection():
     collection = {'item1': 'dsfdsf', 'item2': 'dsgdsgds'}
     collection_len = len(collection)

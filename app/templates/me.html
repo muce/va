@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Vinyl Alert{% endblock %}
+
+{% block page_content %}
+{%- if current_user.is_authenticated() %}
+<div class="row">
+	<div class="large-12 columns">
+		<h2>Me</h2>
+		<hr/>
+	</div>
+</div>
+
+<div class="row">
+	<h3>Me</h3>
+	<div class="large-12 columns">
+		<p>
+            <table>
+                <tr><td><b>ID:&nbsp;</b></td><td>{{me.id}}</td></tr>
+                <tr><td><b>Username:&nbsp;</b></td><td>{{me.username}}</td></tr>
+                <tr><td><b>Releases Contributed:&nbsp;</b></td><td>{{me.releases_contributed}}</td></tr>
+                <tr><td><b>Wantlist Length:&nbsp;</b></td><td>{{me.num_wantlist}}</td></tr>
+                <tr><td><b>Lists Length:&nbsp;</b></td><td>{{me.num_lists}}</td></tr>
+                <tr><td><b>Rank:&nbsp;</b></td><td>{{me.rank}}</td></tr>
+                <tr><td><b>Average Rating:&nbsp;</b></td><td>{{me.rating_avg}}</td></tr>
+                <tr><td><b>Username:&nbsp;</b></td><td>{{me.username}}</td></tr>
+            </table>
+            <!--
+                url = SimpleField('uri')
+                name = SimpleField(writable=True)
+                profile = SimpleField(writable=True)
+                location = SimpleField(writable=True)
+                home_page = SimpleField(writable=True)
+                registered = SimpleField(transform=parse_timestamp)
+                inventory = ObjectCollection('Listing', key='listings', url_key='inventory_url')
+                wantlist = ObjectCollection('WantlistItem', key='wants', url_key='wantlist_url', list_class=Wantlist)
+                -->
+		</p>
+	</div>
+</div>
+
+{% else %}
+<h3>Guest - Unauthorised. Please Register or Login</h3>
+{% endif %}
+{% endblock %}
