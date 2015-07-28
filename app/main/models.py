@@ -1,14 +1,12 @@
-from flask import current_app
-from datetime import datetime
-
 # useful URLs
 # http://www.discogs.com/stats/contributors?start=0
 # http://www.discogs.com/sell/release/509020
+
 class MatchMaker():
 
-    def get_wantlist_items(self, me):
+    def get_wantlist_items(self, user):
         want_list_items = []
-        for i in me.wantlist:
+        for i in user.wantlist:
             wantlist_obj = {}
             wantlist_obj['id'] = i.release.id
             wantlist_obj['title'] = i.release.title

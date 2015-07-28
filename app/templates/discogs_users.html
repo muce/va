@@ -5,21 +5,16 @@
 {% block page_content %}
 <div class="row">
 	<div class="large-12 columns">
-		<h2>Collection</h2>
+		<h2>Discogs Users</h2>
 		<hr/>
 	</div>
 </div>
 
 <div class="row">
 	<div class="large-12 columns">
-		<b>d:</b>&nbsp;{{d}}<br/>
-		<b>u:</b>&nbsp;{{u}}<br/>
-		<b>i:</b>&nbsp;{{i}}<br/>
-		<b>Username:</b>&nbsp;{{username}}<br/>
-		<hr/>
 		<ul>
-		{% for item in collection: %}
-			<li>{{item}}:&nbsp;{{collection[item]}}</li>
+		{% for user in discogs_users: %}
+			<li><a href="/discogs/user/{{user}}">{{user}}</a></li>
 		{% endfor %}
 		</ul>
 		<hr/>

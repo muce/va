@@ -18,11 +18,12 @@ mm = MatchMaker()
 @main.route('/')
 def index():
     app = current_app._get_current_object()
+    conf = app.config
 
-    mm.set_dict_key('user_agent', app.config['DISCOGS_USER_AGENT'])
-    mm.set_dict_key('consumer_key', app.config['DISCOGS_CONSUMER_KEY'])
-    mm.set_dict_key('consumer_secret', app.config['DISCOGS_CONSUMER_SECRET'])
-    mm.set_dict_key('callback_url', app.config['DISCOGS_CALLBACK_URL'])
+    mm.set_dict_key('user_agent', conf['DISCOGS_USER_AGENT'])
+    mm.set_dict_key('consumer_key', conf['DISCOGS_CONSUMER_KEY'])
+    mm.set_dict_key('consumer_secret', conf['DISCOGS_CONSUMER_SECRET'])
+    mm.set_dict_key('callback_url', conf['DISCOGS_CALLBACK_URL'])
     d = Client(mm.get_dict_key('user_agent'))
     d.set_consumer_key(mm.get_dict_key('consumer_key'), mm.get_dict_key('consumer_secret'))
 
@@ -40,12 +41,6 @@ def index():
 
     return redirect(mm.get_dict_key('authorise_url'))
 
-    """
-    r = urllib2.urlopen(mm.get_dict_key('authorise_url')).read()
-    for i in r:
-        print r
-    return redirect('/tokens')
-    """
 
 @main.route('/authorised')
 def discogs_authorised():
@@ -66,6 +61,67 @@ def discogs_authorised():
                             user = u,
                             main_menu_url = 'http://localhost:5000/menu')
 
+
+@main.route('/discogs/me')
+def discogs_me():
+    app = current_app._get_current_object()
+    d = mm.get_dict_key('client')
+    me = d.identity()
+
+    return render_template('me.html',
+                            page_name = 'me.html',
+                            me = me)
+
+
+@main.route('/discogs/wantlist')
+def discogs_wantlist():
+    app = current_app._get_current_object()
+    d = mm.get_dict_key('client')
+
+    me = d.identity()
+    u = d.user(me.username)
+
+    while True:
+        try:
+            wantlist = mm.get_wantlist_items(me)
+            wantlist_len = len(wantlist)
+            break
+        except ssl.SSLError:
+            print "SSLError at wantlist = mm.get_wantlist_items(me)"
+
+    return render_template('wantlist.html',
+                            page_name = 'wantlist.html',
+                            user_agent = mm.get_dict_key('user_agent'),
+                            wantlist = wantlist,
+                            wantlist_len = wantlist_len)
+
+
+@main.route('/discogs/collection')
+def discogs_collection():
+    collection = {'item1': 'dsfdsf', 'item2': 'dsgdsgds'}
+    collection_len = len(collection)
+    return render_template('collection.html',
+                           collection = collection,
+                           collection_len = collection_len)
+
+
+@main.route('/discogs/users')
+def discogs_users():
+    discogs_users = ['blackcat_records', 'theory-x']
+    return render_template('discogs_users.html',
+                           discogs_users = discogs_users)
+
+
+@main.route('/discogs/tokens')
+def discogs_tokens():
+    app = current_app._get_current_object()
+    d = mm.get_dict_key('client')
+
+    return render_template('tokens.html',
+                            page_name = 'tokens.html',
+                            mm_items = mm.get_items())
+
+
 @main.route('/menu')
 def discogs_menu():
     app = current_app._get_current_object()
@@ -80,34 +136,14 @@ def discogs_menu():
                             matchlist_url = 'matchlist_url',
                             other_url = 'other_url')
 
-@main.route('/discogs/tokens')
-def discogs_tokens():
-    app = current_app._get_current_object()
+
+@main.route('/discogs/user/<username>')
+def discogs_user(username):
     d = mm.get_dict_key('client')
-
-    return render_template('tokens.html',
-                            page_name = 'tokens.html',
-                            mm_items = mm.get_items())
-
-@main.route('/discogs/me')
-def discogs_me():
-    app = current_app._get_current_object()
-    d = mm.get_dict_key('client')
-    me = d.identity()
-
-    return render_template('me.html',
-                            page_name = 'me.html',
-                            me = me)
-
-@main.route('/discogs/wantlist')
-def discogs_wantlist():
-    app = current_app._get_current_object()
-
-    d = mm.get_dict_key('client')
-    #d.set_consumer_key(mm.get_dict_key('consumer_key'), mm.get_dict_key('consumer_secret'))
-
-    me = d.identity()
-    u = d.user(me.username)
+    u = d.user(username)
+    inventory_len = str(len(u.inventory))
+    # inventory = u.inventory
+    inventory = []
 
     while True:
         try:
@@ -117,37 +153,11 @@ def discogs_wantlist():
         except ssl.SSLError:
             print "SSLError at wantlist = mm.get_wantlist_items(me)"
 
-    return render_template('wantlist.html',
-                            user_agent = mm.get_dict_key('user_agent'),
-                            page_name = 'wantlist.html',
-                            wantlist = wantlist,
-                            wantlist_len = wantlist_len)
-
-@main.route('/discogs/collection')
-def discogs_collection():
-    collection = {'item1': 'dsfdsf', 'item2': 'dsgdsgds'}
-    collection_len = len(collection)
     return render_template('collection.html',
-                           collection = collection,
-                           collection_len = collection_len)
-
-@main.route('/discogs/user/<username>')
-def discogs_user(username):
-    d = Client(session['discogs_user_agent'])
-    d.set_consumer_key(session['discogs_consumer_key'], session['discogs_consumer_secret'])
-    d.set_token(session['request_token'], session['request_secret'])
-
-    u = d.user(username)
-    inventory_len = str(len(u.inventory))
-    # inventory = u.inventory
-    inventory = []
-
-    return render_template('collection.html',
-                           user=u,
-                           username=username,
-                           )
-    # inventory=inventory, \
-    # inventory_len=inventory_len)
+                           d=str(d),
+                           u=str(u),
+                           i=len(u.inventory),
+                           username=username)
 
 
 # list all sellers with the release <release_id>
