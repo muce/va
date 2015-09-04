@@ -77,13 +77,12 @@ def discogs_me():
 def discogs_wantlist():
     app = current_app._get_current_object()
     d = mm.get_dict_key('client')
-
     me = d.identity()
     u = d.user(me.username)
 
     while True:
         try:
-            wantlist = mm.get_wantlist_items(me)
+            wantlist = mm.get_wantlist_items(d.identity())
             wantlist_len = len(wantlist)
             break
         except ssl.SSLError:
@@ -100,14 +99,14 @@ def discogs_wantlist():
 def discogs_collection():
     collection = {'item1': 'dsfdsf', 'item2': 'dsgdsgds'}
     collection_len = len(collection)
-    return render_template('collection.html',
+    return render_template('discogs_user.html',
                            collection = collection,
                            collection_len = collection_len)
 
 
 @main.route('/discogs/users')
 def discogs_users():
-    discogs_users = ['blackcat_records', 'theory-x']
+    discogs_users = ['sousoudaddy', 'scientistindubwise', 'blackcat_records', 'theory-x', 'xpe74', 'jillchal']
     return render_template('discogs_users.html',
                            discogs_users = discogs_users)
 
@@ -141,23 +140,20 @@ def discogs_menu():
 def discogs_user(username):
     d = mm.get_dict_key('client')
     u = d.user(username)
-    inventory_len = str(len(u.inventory))
-    # inventory = u.inventory
-    inventory = []
 
-    while True:
-        try:
-            wantlist = mm.get_wantlist_items(me)
-            wantlist_len = len(wantlist)
-            break
-        except ssl.SSLError:
-            print "SSLError at wantlist = mm.get_wantlist_items(me)"
+    collection = mm.get_collection_folders(u)
+    wantlist = mm.get_wantlist_items(u)
+    listings = mm.get_listing_items(u)
 
-    return render_template('collection.html',
-                           d=str(d),
-                           u=str(u),
-                           i=len(u.inventory),
-                           username=username)
+    return render_template('discogs_user.html',
+                            d=str(d),
+                            u=u,
+                            wantlist=wantlist,
+                            listings=listings,
+                            collection=collection,
+                            num_listings=len(u.inventory),
+                            num_collection=u.num_collection,
+                            num_wantlist=len(u.wantlist))
 
 
 # list all sellers with the release <release_id>

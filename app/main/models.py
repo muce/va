@@ -5,25 +5,22 @@
 class MatchMaker():
 
     def get_wantlist_items(self, user):
-        want_list_items = []
-        for i in user.wantlist:
-            wantlist_obj = {}
-            wantlist_obj['id'] = i.release.id
-            wantlist_obj['title'] = i.release.title
-            wantlist_obj['year'] = i.release.year
-            wantlist_obj['status'] = i.release.status
-            wantlist_obj['country'] = i.release.country
-            wantlist_obj['data_quality'] = i.release.data_quality
-            wantlist_obj['genres'] = i.release.genres
-            wantlist_obj['labels'] = i.release.labels
-            wantlist_obj['companies'] = "companies"  # i.release.companies
-            wantlist_obj['artists'] = i.release.artists
-            wantlist_obj['notes'] = "notes"  # i.release.notes
-            wantlist_obj['format'] = i.release.formats
-            wantlist_obj['credits'] = "credits"  # i.release.credits
-            wantlist_obj['tracklist'] = "tracklist"  # i.release.tracklist
-            want_list_items.append(wantlist_obj)
-        return want_list_items
+        wantlist = user.wantlist
+        return wantlist
+
+    def get_collection_folders(self, user):
+        folders = user.collection_folders
+        return folders
+
+    def get_listing_items(self, user):
+        listing_items = user.inventory
+        return listing_items
+
+    def get_wantlist_matches(self, user1, user2):
+        return {}
+
+    def get_listing_matches(self, user1, user2):
+        return {}
 
     def set_dict_key(self, key, value):
         self.dict[key] = value

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Vinyl Alert {{ current_user.username }}{% endblock %}
+
+{% block page_content %}
+<div class="row">
+	<div class="large-12 columns">
+		<h2>User - {{u.username}} ({{u.id}})</h2>
+        <hr/>
+	</div>
+</div>
+
+<div class="row">
+	<div class="large-12 columns">
+        <h3>Collection&nbsp;-&nbsp;{{num_collection}} item{% if num_collection != 1 %}s{% endif %}</h3>
+        {{collection}}
+        <ul>
+        {% for i in collection %}
+            <li>{{i.name}}</li>
+            <ul>
+                {% for j in i.releases %}
+                <li>{{j}}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+        </ul>
+        <hr/>
+	</div>
+</div>
+
+<div class="row">
+	<div class="large-12 columns">
+		<h3>Wantlist - {{num_wantlist}} item{% if num_wantlist != 1 %}s{% endif %}</h3>
+        {{wantlist}}
+        <ul>
+            {% for i in wantlist %}
+            <li>{{i}}</li>
+            {% endfor %}
+        </ul>
+        <hr/>
+	</div>
+</div>
+
+<div class="row">
+	<div class="large-12 columns">
+		<h3>Listings - {{num_listings}} item{% if num_listings != 1 %}s{% endif %}</h3>
+        {{listings}}
+        <ul>
+            {% for i in listings %}
+            <li>{{i}}</li>
+            {% endfor %}
+        </ul>
+        <hr/>
+	</div>
+</div>
+
+{% endblock %}
+
+

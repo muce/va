@@ -79,13 +79,23 @@ class OAuth2Fetcher(Fetcher):
         self.oauth_client.token.set_verifier(verifier)
 
     def fetch(self, client, method, url, data=None, headers=None, json_format=True):
-        if data:
-            print 'Fetcher data: '+str(data)
-            body = json.dumps(data) if json_format else data
-            resp, content = self.oauth_client.request(url, method, body, headers=headers)
-        else:
-            print 'Fetcher data: none'
-            resp, content = self.oauth_client.request(url, method, headers=headers)
+        print 'fetchers.fetch url: '+url
+        retry = 3
+        while True:
+            try:
+                if data:
+                    body = json.dumps(data) if json_format else data
+                    resp, content = self.oauth_client.request(url, method, body, headers=headers)
+                else:
+                    resp, content = self.oauth_client.request(url, method, headers=headers)
+                break
+            except Exception as e:
+                print url, "Not good:", e
+                retry = retry - 1
+                if retry == 0:
+                    return json.dumps({}), 200
+                    break
+
         return content, int(resp['status'])
 
 

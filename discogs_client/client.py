@@ -108,7 +108,8 @@ class Client(object):
         if 200 <= status_code < 300:
             return body
         else:
-            raise HTTPError(body['message'], status_code)
+            print HTTPError(body['message'], status_code)
+            return {}
 
     def _get(self, url):
         return self._request('GET', url)
